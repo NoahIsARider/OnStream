@@ -1,4 +1,4 @@
-# FakeStream
+# OnStream
 
 **A pomodoro focus timer disguised as a live stream.**
 
