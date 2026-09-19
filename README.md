@@ -2,6 +2,8 @@
 
 **A pomodoro focus timer disguised as a live stream.**
 
+**Live demo:** <https://noahisarider.github.io/OnStream/> — no install, no account.
+
 Pick a skin, hit **Go Live**, and get to work. Anyone glancing at your screen sees a streamer — sidebar, chat, danmaku, viewer count, a channel page. What's actually running is a 25/5/15 focus timer.
 
 Everything is client-side. No account, no backend, no network traffic.
@@ -14,7 +16,7 @@ Everything is client-side. No account, no backend, no network traffic.
 
 ## Why
 
-Focus timers fail for a mundane reason: they look like tools, so you fiddle with them instead of working on the thing behind them. A livestream also looks like a tool — but it comes with an audience. FakeStream gives you the audience without the internet: chat scrolling on its own, danmaku drifting past, hearts floating up, gifts landing. Enough ambient motion to feel observed, and nothing to click.
+Focus timers fail for a mundane reason: they look like tools, so you fiddle with them instead of working on the thing behind them. A livestream also looks like a tool — but it comes with an audience. OnStream gives you the audience without the internet: chat scrolling on its own, danmaku drifting past, hearts floating up, gifts landing. Enough ambient motion to feel observed, and nothing to click.
 
 ## Features
 
@@ -61,7 +63,23 @@ Read this first, it explains most "the camera doesn't work" reports.
 
 `getUserMedia` and `getDisplayMedia` only exist in a [secure context](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices). `http://localhost` counts. A LAN address does **not** — `http://192.168.1.20:5000` will fail, because at that origin `navigator.mediaDevices` is simply `undefined`.
 
-FakeStream hides that failure rather than throwing an error: it falls back to a simulated placeholder reading *"Camera Active — Demo mode, camera feed simulated."* So the app looks fine over plain HTTP while quietly never touching your camera. Any real deployment therefore needs TLS.
+OnStream hides that failure rather than throwing an error: it falls back to a simulated placeholder reading *"Camera Active — Demo mode, camera feed simulated."* So the app looks fine over plain HTTP while quietly never touching your camera. Any real deployment therefore needs TLS.
+
+### GitHub Pages
+
+The app is entirely client-side, so it exports to plain static HTML and needs no server at all — that is what the live demo above is running on.
+
+`.github/workflows/deploy-pages.yml` builds and publishes on every push to `main`. The build sets `GITHUB_PAGES=true`, which switches on `output: 'export'` plus a `basePath` derived from `GITHUB_REPOSITORY` (a project site is served from `/<repo>/`, and without the prefix every `/_next/...` asset 404s).
+
+Turn it on once under **Settings → Pages → Source: GitHub Actions**. Pages serves over HTTPS, so the secure-context requirement above is satisfied — camera and screen share work on Pages, unlike a plain-HTTP LAN address.
+
+To reproduce the export locally, serve `out/` from the same subpath Pages uses:
+
+```bash
+GITHUB_PAGES=true PAGES_BASE_PATH=/OnStream pnpm exec next build --webpack
+mkdir -p /tmp/site/OnStream && cp -r out/. /tmp/site/OnStream/
+python3 -m http.server 8080 --directory /tmp/site   # → http://localhost:8080/OnStream/
+```
 
 ### Vercel
 
@@ -70,8 +88,8 @@ Import the repository — the Next.js preset builds it with no configuration. If
 ### Docker
 
 ```bash
-docker build -t fakestream .
-docker run --rm -p 3000:3000 fakestream
+docker build -t onstream .
+docker run --rm -p 3000:3000 onstream
 ```
 
 Then open <http://localhost:3000>. The image is a three-stage Node 22 build (`deps` → `builder` → `runner`) that ends up running `next start`.

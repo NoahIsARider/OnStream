@@ -5,7 +5,12 @@ import path from 'path';
 // basePath or every /_next/... asset 404s. Everything else — local dev, Docker,
 // Vercel — is served from the root, so this is opt-in via env and defaults off.
 const pagesExport = process.env.GITHUB_PAGES === 'true';
-const pagesBasePath = process.env.PAGES_BASE_PATH ?? '/fakestream';
+// GitHub Actions exposes the repository as "<owner>/<name>", and a Pages project
+// site is served from /<name>/. Deriving the basePath from it means a repo
+// rename doesn't silently break every asset URL.
+const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1];
+const pagesBasePath =
+  process.env.PAGES_BASE_PATH ?? (repoName ? `/${repoName}` : '/OnStream');
 
 const nextConfig: NextConfig = {
   ...(pagesExport

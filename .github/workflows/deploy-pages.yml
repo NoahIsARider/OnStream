@@ -36,7 +36,7 @@ jobs:
         env:
           npm_config_registry: https://registry.npmjs.org/
 
-      # Produces out/ as a fully static site with every asset under /fakestream/.
+      # Produces out/ as a fully static site; basePath comes from GITHUB_REPOSITORY.
       - name: Build static export
         run: pnpm exec next build --webpack
         env:

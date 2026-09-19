@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# FakeStream needs Node >= 20.9 (Next.js 16). Debian slim is used instead of
+# OnStream needs Node >= 20.9 (Next.js 16). Debian slim is used instead of
 # Alpine so the prebuilt `sharp` binaries resolve without a musl rebuild.
 FROM node:22-slim AS base
 ENV PNPM_HOME=/pnpm \

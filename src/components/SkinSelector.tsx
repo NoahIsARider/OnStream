@@ -11,7 +11,7 @@ export default function SkinSelector({ onSelect }: SkinSelectorProps) {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-white mb-3">
-            FakeStream
+            OnStream
           </h1>
           <p className="text-lg text-gray-300">
             Your focus timer disguised as a live stream
